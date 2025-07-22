@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   postgres database:
     runs on : self-hosted
-      steps: 
+      steps : 
         - name: create network
         run: |
           if docker network ls --format '{{ .Name }}' | grep -wq lmsnetwork; then
