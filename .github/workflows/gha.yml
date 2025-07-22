@@ -20,7 +20,7 @@ jobs:
           fi
   Build :
     needs : postgres_database
-    runs-on : ubuntu latest
+    runs-on : ubuntu-latest
     steps :
       - name: checkout the code
         uses: actions/checkout@v4.2.2
