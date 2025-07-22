@@ -1,22 +1,22 @@
 name: pipeline
 on: workflow_dispatch
 jobs:
-  postgres database:
-    runs on : self-hosted
-      steps : 
-        - name: create network
-        run: |
-          if docker network ls --format '{{ .Name }}' | grep -wq lmsnetwork; then
-            echo "lmsnetwork exists"
-          else
-            docker network create lmsnetwork
-          fi
-        - name: create lmsdb
-        run: |
-          if docker ps -a --format '{{ .Name }}' | grep -wq lmsdb; then
-            echo "lmsdb exists"
-          else
-            docker container run -dt --name lmsdb -p 5432:5432 --network lmsnetwork -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} postgres
-          fi
+  postgres_database :
+  runs on : self-hosted
+  steps : 
+    - name: create network
+      run: |
+        if docker network ls --format '{{ .Name }}' | grep -wq lmsnetwork; then
+          echo "lmsnetwork exists"
+        else
+          docker network create lmsnetwork
+        fi
+    - name: create lmsdb
+      run: |
+        if docker ps -a --format '{{ .Name }}' | grep -wq lmsdb; then
+          echo "lmsdb exists"
+        else
+          docker container run -dt --name lmsdb -p 5432:5432 --network lmsnetwork -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} postgres
+        fi
         
         
