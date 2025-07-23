@@ -42,6 +42,23 @@ jobs:
           docker push ${{ vars.DOCKER_USERNAME }}/api:latest
           docker push ${{ vars.DOCKER_USERNAME }}/webapp:latest
 
+  Deploy :
+    needs: Build
+    runs-on : self-hosted
+    steps :
+      - name: pull the images
+        run : |
+          docker pull ${{ vars.DOCKER_USERNAME }}/api:latest
+          docker pull ${{ vars.DOCKER_USERNAME }}/webapp:latest
+      - name: run api container
+        run : |
+          if docker ps -a --format '{{ .Names }}' | grep -wq backend; then
+            echo "backend exists"
+          else
+            docker container run -dt --name backend -p 3000:3000 --network lmsnetwork ${{ vars.DOCKER_USERNAME }}/api:latest
+          fi
+      - name: run webapp
+
         
           
         
