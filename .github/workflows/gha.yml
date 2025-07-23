@@ -48,7 +48,7 @@ jobs:
     steps :
       - name: pull the image
         run : docker pull ${{ vars.DOCKER_USERNAME }}/api:latest
-      - name: run frontend container
+      - name: run backend container
         run : |
           if docker ps -a --format '{{ .Names }}' | grep -wq backend; then
             echo "backend exists"
@@ -59,7 +59,7 @@ jobs:
           fi
 
   Deploy-frontend:
-    needs: Build
+    needs: Deploy-backend
     runs-on : self-hosted
     steps :
       - name: pull the image
