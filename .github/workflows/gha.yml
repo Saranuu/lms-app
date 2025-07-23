@@ -47,8 +47,7 @@ jobs:
     runs-on : self-hosted
     steps :
       - name: pull the image
-        run : |
-          docker pull ${{ vars.DOCKER_USERNAME }}/api:latest
+        run : docker pull ${{ vars.DOCKER_USERNAME }}/api:latest
       - name: run frontend container
         run : |
           if docker ps -a --format '{{ .Names }}' | grep -wq backend; then
@@ -64,8 +63,7 @@ jobs:
     runs-on : self-hosted
     steps :
       - name: pull the image
-        run : |
-          docker pull ${{ vars.DOCKER_USERNAME }}/webapp:latest
+        run : docker pull ${{ vars.DOCKER_USERNAME }}/webapp:latest
       - name: run frontend container
         run : |
           if docker ps -a --format '{{ .Names }}' | grep -wq frontend; then
