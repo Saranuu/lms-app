@@ -42,22 +42,40 @@ jobs:
           docker push ${{ vars.DOCKER_USERNAME }}/api:latest
           docker push ${{ vars.DOCKER_USERNAME }}/webapp:latest
 
-  Deploy :
+  Deploy-backend :
     needs: Build
     runs-on : self-hosted
     steps :
-      - name: pull the images
+      - name: pull the image
         run : |
           docker pull ${{ vars.DOCKER_USERNAME }}/api:latest
-          docker pull ${{ vars.DOCKER_USERNAME }}/webapp:latest
-      - name: run api container
+      - name: run frontend container
         run : |
           if docker ps -a --format '{{ .Names }}' | grep -wq backend; then
             echo "backend exists"
+            docker container rm -f backend
+            docker container run -dt --name backend -p 3000:3000 --network lmsnetwork -e DATABASE_URL=postgresql://postgres:${{ secrets.DB_PASSWORD }}@lmsdb:5432/postgres -e PORT=3000 -e MODE=Production saranuu/api:latest
           else
-            docker container run -dt --name backend -p 3000:3000 --network lmsnetwork ${{ vars.DOCKER_USERNAME }}/api:latest
+            docker container run -dt --name backend -p 3000:3000 --network lmsnetwork -e DATABASE_URL=postgresql://postgres:${{ secrets.DB_PASSWORD }}@lmsdb:5432/postgres -e PORT=3000 -e MODE=Production saranuu/api:latest
           fi
-      - name: run webapp
+
+  Deploy-frontend:
+    needs: Build
+    runs-on : self-hosted
+    steps :
+      - name: pull the image
+        run : |
+          docker pull ${{ vars.DOCKER_USERNAME }}/webapp:latest
+      - name: run frontend container
+        run : |
+          if docker ps -a --format '{{ .Names }}' | grep -wq frontend; then
+            echo "frontend exists"
+            docker container rm -f frontend
+            docker container run -dt --name frontend -p 80:80 --network lmsnetwork ${{ vars.DOCKER_USERNAME }}/webapp:latest
+          else
+            docker container run -dt --name frontend -p 80:80 --network lmsnetwork ${{ vars.DOCKER_USERNAME }}/webapp:latest
+          fi
+          
 
         
           
